@@ -111,6 +111,7 @@ describe("configuration", () => {
       label: "combined policy and bundle enforcement",
       input: {
         apiKey: "ramen_ak_test",
+        providerKey: "provider_key_test",
         policyIds: ["policy-test"],
         bundleIds: ["bundle-test"],
         mode: "enforce",
@@ -212,12 +213,17 @@ describe("dsh-ramen-guard", () => {
     mocks.evaluateCompliance.mockResolvedValue(verdict(true));
     const { listener } = mount({
       apiKey: "ramen_ak_test",
+      providerKey: "provider_key_test",
       bundleIds: ["bundle-test"],
       policyIds: ["policy-test"],
     });
 
     await listener(EXECUTION, () => Promise.resolve({ kind: "allow" }));
 
+    expect(mocks.RamenClient).toHaveBeenCalledWith({
+      apiKey: "ramen_ak_test",
+      providerKey: "provider_key_test",
+    });
     expect(mocks.evaluateCompliance).toHaveBeenCalledWith(
       JSON.stringify({ tool: "shell", arguments: { command: "rm -rf /" } }),
       {

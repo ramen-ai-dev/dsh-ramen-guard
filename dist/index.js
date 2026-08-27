@@ -6,6 +6,7 @@ export const BOUNDARY_UNAVAILABLE_REASON = "ramen ai execution boundary unavaila
 const DENIED_WITHOUT_STEERING_REASON = "ramen ai denied tool execution";
 const configSchema = z.object({
     apiKey: z.string().required(),
+    providerKey: z.string(),
     baseUrl: z.string(),
     mode: z.union(["enforce", "audit"]).default("enforce"),
     bundleIds: z.array(z.string().required()),
@@ -65,6 +66,7 @@ export function apply(ctx, config) {
     const mode = config.mode ?? "enforce";
     const client = new RamenClient({
         apiKey: config.apiKey,
+        ...(config.providerKey ? { providerKey: config.providerKey } : {}),
         ...(config.baseUrl ? { baseUrl: config.baseUrl } : {}),
     });
     ctx.on("tools/pre-execute", async (exec, next) => {

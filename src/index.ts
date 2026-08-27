@@ -14,6 +14,8 @@ export type GuardMode = "enforce" | "audit";
 interface BaseConfig {
   /** ramen-ai API key. */
   apiKey: string;
+  /** Optional LLM provider API key for BYOK inference. */
+  providerKey?: string;
   /** Optional ramen-ai API base URL override. */
   baseUrl?: string;
   /** Enforcement is fail-closed; audit records outcomes and delegates every call. */
@@ -28,6 +30,7 @@ export type Config = BaseConfig &
 
 const configSchema = z.object({
   apiKey: z.string().required(),
+  providerKey: z.string(),
   baseUrl: z.string(),
   mode: z.union(["enforce", "audit"] as const).default("enforce"),
   bundleIds: z.array(z.string().required()),
@@ -96,6 +99,7 @@ export function apply(ctx: Context, config: Config): void {
   const mode = config.mode ?? "enforce";
   const client = new RamenClient({
     apiKey: config.apiKey,
+    ...(config.providerKey ? { providerKey: config.providerKey } : {}),
     ...(config.baseUrl ? { baseUrl: config.baseUrl } : {}),
   });
 

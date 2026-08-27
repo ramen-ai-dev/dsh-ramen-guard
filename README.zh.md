@@ -105,21 +105,22 @@ DeepSeek Harness 可以赋予自主代理真实的 shell、代码、数据和 AP
 
 ## API 密钥
 
-使用本集成前，请在以下页面为**托管推理 Enterprise 账户**获取 ramen-ai API 密钥：
+使用本集成前，请在以下页面获取 ramen-ai API 密钥：
 **[https://ramenai.dev/pricing](https://ramenai.dev/pricing)**
 
-本版本尚未公开 Free Starter 和 Professional BYOK 套餐所需的 provider-key 配置。
-使用仅支持 BYOK 的账户可能会收到 `402 Payment Required`，强制执行模式会拒绝该请求。
+Starter 和 Professional BYOK 套餐还需要 provider API 密钥。Enterprise 账户使用托管推理，
+无需配置 `providerKey`。
 
-请把 ramen-ai 密钥存放在环境变量中，并通过 Cordis 配置解析。不要把真实密钥直接写入
-`cordis.patch.yml` 或提交到源代码仓库。
+请把 ramen-ai 和 provider 密钥存放在环境变量中，并通过 Cordis 配置解析。不要把真实密钥
+直接写入 `cordis.patch.yml` 或提交到源代码仓库。
 
 ```bash
 export RAMEN_API_KEY=ramen_ak_...
+export OPENAI_API_KEY=sk-...
 ```
 
 插件不会隐式读取环境变量。下方配置使用 Cordis 官方的 `!!js` loader 表达式，
-在加载时把环境变量传给 `apiKey`。
+在加载时把环境变量传给 `apiKey` 和可选的 `providerKey`。
 
 ---
 
@@ -158,6 +159,7 @@ dsh plugin --profile web add /absolute/path/to/ramen-ai-dsh-ramen-guard-0.1.0.tg
       name: '@ramen-ai/dsh-ramen-guard'
       config:
         apiKey: !!js process.env.RAMEN_API_KEY
+        providerKey: !!js process.env.OPENAI_API_KEY
         bundleIds: ['ramen__shield_core_it']
         mode: enforce
 ```
@@ -192,6 +194,7 @@ ramen ai execution boundary unavailable
       name: '@ramen-ai/dsh-ramen-guard'
       config:
         apiKey: !!js process.env.RAMEN_API_KEY
+        providerKey: !!js process.env.OPENAI_API_KEY
         policyIds: ['<POLICY_UUID>']
         mode: audit
 ```
@@ -201,9 +204,9 @@ Harness 中的其他 guard 仍然可以拒绝调用。
 
 ### BYOK 账户兼容性
 
-当前插件配置公开 ramen-ai `apiKey`，但尚未公开 provider key。需要 BYOK provider key
-的 ramen-ai 账户可能收到 `402 Payment Required`；强制执行模式会把该响应视为拒绝。
-本版本请使用托管推理的 Enterprise 账户。不要把 provider 凭据放入工具参数或受版本控制的配置。
+Starter 和 Professional 账户可通过 `providerKey` 配置其 provider API 密钥。核心 SDK 会将其
+作为 `X-Provider-Key` 请求头发送；本插件不会把该密钥放入被评估的工具 intent。Enterprise
+账户省略 `providerKey` 并使用托管推理。不要把 provider 凭据放入工具参数或受版本控制的配置。
 
 ---
 
@@ -307,6 +310,7 @@ DeepSeek 模型提出工具调用
 | 字段 | 必填 | 默认值 | 说明 |
 |---|---|---|---|
 | `apiKey` | 是 | — | ramen-ai API 密钥。通过 `!!js` 从 `RAMEN_API_KEY` 解析。 |
+| `providerKey` | 否 | — | BYOK provider API 密钥。通过 `!!js` 从 `OPENAI_API_KEY` 解析；托管推理时省略。 |
 | `bundleIds` | 二选一 | `[]` | 每次工具调用使用的 bundle slug。 |
 | `policyIds` | 二选一 | `[]` | 显式 policy UUID；可与 bundle 同时使用。 |
 | `mode` | 否 | `enforce` | `enforce` 或显式的非阻止 `audit`。 |
@@ -358,6 +362,6 @@ transport 失败、取消、收据缺失或无效、payload 结构以及审计�
   已测试的 peer 版本固定在 `package.json` 中。
 - 每次工具执行前都会增加一次网络往返。
 - 审计模式仅用于可观测性，不构成执行边界。
-- 当前版本尚未公开 ramen-ai BYOK provider-key 配置。
+- BYOK 账户必须提供 `providerKey`；托管推理账户省略该字段。
 - 本插件只治理进入 Harness 工具 pipeline 的调用，不治理 pipeline 之外或其他进程中的动作。
 - 这是非官方社区集成。DeepSeek 不审核或推荐其策略行为、安全保证或发布流程。

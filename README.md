@@ -127,25 +127,24 @@ it pre-execution, issuing a verified Ed25519 receipt.
 
 ## API Key
 
-To use this integration, obtain a ramen-ai API key for a **managed-inference
-Enterprise account** at:
+To use this integration, obtain a ramen-ai API key at:
 **[https://ramenai.dev/pricing](https://ramenai.dev/pricing)**
 
-This release does not expose the provider-key configuration required by the
-Free Starter and Professional BYOK tiers. Using a BYOK-only account can produce
-`402 Payment Required`, which enforcement mode denies.
+Starter and Professional BYOK accounts also need a provider API key. Enterprise
+accounts use managed inference and omit `providerKey`.
 
-Store the ramen-ai key in the environment and resolve it through Cordis
-configuration. Never place a real key directly in `cordis.patch.yml` or source
-control.
+Store ramen-ai and provider keys in environment variables, then resolve them
+through Cordis configuration. Never place real keys directly in
+`cordis.patch.yml` or source control.
 
 ```bash
 export RAMEN_API_KEY=ramen_ak_...
+export OPENAI_API_KEY=sk-...
 ```
 
 The plugin does not read environment variables implicitly. The configuration
-example below uses the official Cordis `!!js` loader expression to pass the
-value into `apiKey` at load time.
+example below uses the official Cordis `!!js` loader expression to pass values
+into `apiKey` and optional `providerKey` at load time.
 
 ---
 
@@ -185,6 +184,7 @@ Add the plugin to the selected profile's `cordis.patch.yml`, normally under
       name: '@ramen-ai/dsh-ramen-guard'
       config:
         apiKey: !!js process.env.RAMEN_API_KEY
+        providerKey: !!js process.env.OPENAI_API_KEY
         bundleIds: ['ramen__shield_core_it']
         mode: enforce
 ```
@@ -222,6 +222,7 @@ making ramen-ai an enforcement gate:
       name: '@ramen-ai/dsh-ramen-guard'
       config:
         apiKey: !!js process.env.RAMEN_API_KEY
+        providerKey: !!js process.env.OPENAI_API_KEY
         policyIds: ['<POLICY_UUID>']
         mode: audit
 ```
@@ -232,11 +233,11 @@ still deny the call.
 
 ### BYOK account compatibility
 
-The current plugin config exposes the ramen-ai `apiKey` but does not expose a
-provider key. Accounts whose ramen-ai tier requires a BYOK provider key may
-receive `402 Payment Required`; enforcement mode treats that response as a
-denial. Use a managed-inference Enterprise account for this release. Do not put
-provider credentials into tool arguments or source-controlled configuration.
+Starter and Professional accounts configure `providerKey` with their provider
+API key. The core SDK forwards it as the `X-Provider-Key` request header; this
+plugin never places it in the evaluated tool intent. Enterprise accounts omit
+`providerKey` and use managed inference. Do not put provider credentials into
+tool arguments or source-controlled configuration.
 
 ---
 
@@ -347,6 +348,7 @@ in enforcement mode.
 | Field | Required | Default | Description |
 |---|---|---|---|
 | `apiKey` | yes | — | ramen-ai API key. Resolve from `RAMEN_API_KEY` with `!!js`. |
+| `providerKey` | no | — | BYOK provider API key. Resolve from `OPENAI_API_KEY` with `!!js`; omitted for managed inference. |
 | `bundleIds` | one of | `[]` | Bundle slugs evaluated for every tool call. |
 | `policyIds` | one of | `[]` | Explicit policy UUIDs; may be combined with bundles. |
 | `mode` | no | `enforce` | `enforce` or explicit non-blocking `audit`. |
@@ -400,7 +402,7 @@ available at [ramenai.dev/pricing](https://ramenai.dev/pricing).
   API changes. The tested peer versions are pinned in `package.json`.
 - Evaluation adds one network round-trip before each tool execution.
 - Audit mode is observability, not an execution boundary.
-- The current release does not expose ramen-ai BYOK provider-key configuration.
+- BYOK accounts must provide `providerKey`; managed-inference accounts omit it.
 - This plugin governs calls that reach the Harness tool pipeline; it does not
   govern actions performed outside that pipeline or by unrelated processes.
 - This is an unofficial community integration. DeepSeek does not review or

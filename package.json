@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ramen-ai-dev/dsh-ramen-guard"
+    "url": "git+https://github.com/ramen-ai-dev/dsh-ramen-guard.git"
   },
   "homepage": "https://github.com/ramen-ai-dev/dsh-ramen-guard",
   "bugs": {

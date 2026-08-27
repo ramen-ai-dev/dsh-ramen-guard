@@ -7,6 +7,8 @@ export type GuardMode = "enforce" | "audit";
 interface BaseConfig {
     /** ramen-ai API key. */
     apiKey: string;
+    /** Optional LLM provider API key for BYOK inference. */
+    providerKey?: string;
     /** Optional ramen-ai API base URL override. */
     baseUrl?: string;
     /** Enforcement is fail-closed; audit records outcomes and delegates every call. */
