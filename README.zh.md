@@ -39,7 +39,7 @@ DeepSeek Harness 可以赋予自主代理真实的 shell、代码、数据和 AP
     <img src="https://img.shields.io/badge/PydanticAI-E92063?style=flat&logo=pydantic&logoColor=white" alt="PydanticAI"/>
   </a>
   &nbsp;
-  <a href="https://github.com/ramen-ai-dev/ramen-ai-integrations/tree/master/plugins/mcp-proxy">
+  <a href="https://github.com/ramen-ai-dev/mcp-shield-proxy">
     <img src="https://img.shields.io/badge/MCP-6B21A8?style=flat&logo=anthropic&logoColor=white" alt="MCP"/>
   </a>
   &nbsp;
