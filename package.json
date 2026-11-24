@@ -1,13 +1,13 @@
 {
   "name": "@ramen-ai/dsh-ramen-guard",
-  "version": "0.1.0",
-  "description": "Fail-closed semantic policy guard for secure DeepSeek Harness tool execution.",
+  "version": "0.2.0",
+  "description": "Fail-closed ramen ai execution boundary for DeepSeek Harness tool calls, with a keyless trial and ramen foundry profiles.",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ramen-ai-dev/dsh-ramen-guard.git"
   },
-  "homepage": "https://github.com/ramen-ai-dev/dsh-ramen-guard",
+  "homepage": "https://ramenai.dev",
   "bugs": {
     "url": "https://github.com/ramen-ai-dev/dsh-ramen-guard/issues"
   },
@@ -18,26 +18,34 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./profiles": {
+      "types": "./dist/profiles.d.ts",
+      "import": "./dist/profiles.js"
     }
   },
   "files": [
     "dist",
     "README.md",
-    "README.zh.md"
+    "LICENSE"
   ],
   "keywords": [
     "dsh-plugin",
     "deepseek-harness",
-    "cordis"
+    "cordis",
+    "ramen-foundry",
+    "agent-governance",
+    "keyless-trial"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
     "@deepseek-ai/schemastery": "3.18.1",
-    "@ramen-ai/node-core": "0.3.2"
+    "@ramen-ai/node-core": "^0.3.6"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "4.0.1",
