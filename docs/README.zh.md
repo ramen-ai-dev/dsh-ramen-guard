@@ -1,6 +1,6 @@
 # dsh-ramen-guard
 
-[English](README.md) | 中文
+[English](../README.md) | 中文
 
 > [!IMPORTANT]
 > **非官方社区集成。** 本项目由 ramen ai 社区独立开发和维护，未经 DeepSeek
@@ -8,7 +8,7 @@
 > [DeepSeek Harness 插件专区规则](https://github.com/deepseek-ai/deepseek-harness/discussions/2004)。
 
 <p align="center">
-  <img src="assets/ramen-logo.png" alt="ramen ai" width="100"/>
+  <img src="../assets/ramen-logo.png" alt="ramen ai" width="100"/>
 </p>
 
 <p align="center"><strong>在意图变成行动之前，保护 DeepSeek Harness 工具执行。</strong></p>
@@ -94,7 +94,7 @@ DeepSeek Harness 可以赋予自主代理真实的 shell、代码、数据和 AP
 下图为示意性的终端视图，展示 `dsh-ramen-guard` 在下游分发之前，拒绝了一次源自日志的凭据外泄尝试。
 
 <p align="center">
-  <img src="assets/core-it-interception.png" alt="dsh-ramen-guard 对源自日志的凭据外泄尝试进行 Core IT 拦截（示意）" width="840"/>
+  <img src="../assets/core-it-interception.png" alt="dsh-ramen-guard 对源自日志的凭据外泄尝试进行 Core IT 拦截（示意）" width="840"/>
 </p>
 
 ---
@@ -110,7 +110,7 @@ DeepSeek Harness 可以赋予自主代理真实的 shell、代码、数据和 AP
 在执行前拦截未授权转账，并生成经过验证的 Ed25519 收据。
 
 <p align="center">
-  <img src="assets/grok-bankr.png" alt="ramen ai 在执行前拦截 Grok/Bankr 摩尔斯电码攻击" width="720"/>
+  <img src="../assets/grok-bankr.png" alt="ramen ai 在执行前拦截 Grok/Bankr 摩尔斯电码攻击" width="720"/>
 </p>
 
 ---

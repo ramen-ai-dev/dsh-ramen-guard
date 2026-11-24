@@ -1,5 +1,5 @@
 
-English | [中文](README.zh.md)
+English | [中文](docs/README.zh.md)
 
 > [!IMPORTANT]
 > **Unofficial community integration.** This project is independently developed
